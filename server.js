@@ -1,3 +1,6 @@
+//related artists dream theater
+//curl -X GET "https://api.spotify.com/v1/artists/2aaLAng2L2aWD2FClzwiep/related-artists"
+
 var unirest = require('unirest');
 var express = require('express');
 var events = require('events');
@@ -30,6 +33,7 @@ app.get('/search/:name', function(req, res) {
     searchReq.on('end', function(item) {
         var artist = item.artists.items[0];
         res.json(artist);
+        console.log(artist);
     });
 
     searchReq.on('error', function(code) {

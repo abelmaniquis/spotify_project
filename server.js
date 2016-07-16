@@ -46,23 +46,45 @@ getFromAPI uses the following endpoint:
 
 You then add listeners to the EventEmitter
 */
+
 app.get('/search/:name', function(req, res) {
-    var searchReq = getFromApi('artists/43ZHCT0cAZBISjO8DG9PnE/related-artists', { //This is what is being passed as the endpoint on line 13
-        q: req.params.name, 
+    
+    var searchReq = getFromApi('search', {
+        q: req.params.name,
         limit: 1,
         type: 'artist'
     });
 
     searchReq.on('end', function(item) {
-        var artist = item.artists; //originally: var artist = item.artists.items[1];
+        var artist = item.artists.items[0];
+        var id = item.artists.items[0].id;
         res.json(artist);
-        console.log("artist object:")
-        console.log(artist);
+        
+        console.log(id);
+        
+        getRelevantArtists(id);
     });
+    
 
     searchReq.on('error', function(code) {
         res.sendStatus(code);
     });
+    
+    var getRelevantArtists = function(id){
+        var relevantArtists = getFromApi('artists/2aaLAng2L2aWD2FClzwiep/related-artists',{
+            q: req.params.name, 
+            limit: 1,
+            type: 'artist'
+        });
+        console.log(relevantArtists);
+        
+        relevantArtists.on('end',function(item){
+            console.log(item);
+        })
+        
+    }
+    
+    
 });
 
 app.listen(8080);

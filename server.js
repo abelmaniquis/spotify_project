@@ -71,7 +71,7 @@ app.get('/search/:name', function(req, res) {
     });
     
     var getRelevantArtists = function(id){
-        var relevantArtists = getFromApi('artists/2aaLAng2L2aWD2FClzwiep/related-artists',{
+        var relevantArtists = getFromApi('artists/' + id + '/related-artists',{
             q: req.params.name, 
             limit: 1,
             type: 'artist'

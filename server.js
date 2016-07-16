@@ -68,12 +68,8 @@ app.get('/search/:name', function(req, res) {
         relevant.on('end',function(artistData){
             var artists = artistData.artists;
             console.log(artists[1]);
-            var i = 0;
-            while(i < artists.length){
-            res.json(artists[i]);
-            i += 1;
-            }
-        })
+            res.json(artists);
+            });
         
         relevant.on('error', function(code) {
             res.sendStatus(code);

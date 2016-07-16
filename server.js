@@ -11,14 +11,13 @@ var events = require('events');
 console.log(test.qs());
 */
 var getFromApi = function(endpoint, args) {
+    console.log(endpoint);
     var emitter = new events.EventEmitter();
-    var endpoint = "artists/2aaLAng2L2aWD2FClzwiep/related-artists"; //test
     unirest.get('https://api.spotify.com/v1/' + endpoint) 
            .qs(args)//This queries the string
            .end(function(response) {
                 if (response.ok) {
-                    emitter.emit('end', response.body);
-                    console.log(emitter);
+                    emitter.emit('end', response.body);//end event is emitted, extracts the artist and returns it in a response.
                 }
                 else {
                     emitter.emit('error', response.code);
@@ -48,16 +47,17 @@ getFromAPI uses the following endpoint:
 You then add listeners to the EventEmitter
 */
 app.get('/search/:name', function(req, res) {
-    
-    var searchReq = getFromApi('search', {
-        q: req.params.name,
+    var searchReq = getFromApi('artists/43ZHCT0cAZBISjO8DG9PnE/related-artists', { //This is what is being passed as the endpoint on line 13
+        q: req.params.name, 
         limit: 1,
         type: 'artist'
     });
 
     searchReq.on('end', function(item) {
-        var artist = item.artists/*.items[0]*/;
+        var artist = item.artists; //originally: var artist = item.artists.items[1];
         res.json(artist);
+        console.log("artist object:")
+        console.log(artist);
     });
 
     searchReq.on('error', function(code) {

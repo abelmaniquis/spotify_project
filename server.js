@@ -11,7 +11,6 @@ var events = require('events');
 console.log(test.qs());
 */
 var getFromApi = function(endpoint, args) {
-    console.log(endpoint);
     var emitter = new events.EventEmitter();
     unirest.get('https://api.spotify.com/v1/' + endpoint) 
            .qs(args)//This queries the string
@@ -60,11 +59,11 @@ app.get('/search/:name', function(req, res) {
         var id = item.artists.items[0].id;
         res.json(artist);
         
-        console.log(id);
-        
+        /*Once the search request finishes, 
+        we start a search for relevant artists.*/
         getRelevantArtists(id);
+        
     });
-    
 
     searchReq.on('error', function(code) {
         res.sendStatus(code);
@@ -72,16 +71,18 @@ app.get('/search/:name', function(req, res) {
     
     var getRelevantArtists = function(id){
         var relevantArtists = getFromApi('artists/' + id + '/related-artists',{
-            q: req.params.name, 
-            limit: 1,
-            type: 'artist'
+            query: req.params.name
         });
-        console.log(relevantArtists);
         
-        relevantArtists.on('end',function(item){
-            console.log(item);
+        relevantArtists.on('end',function(artistData){
+            var artists = artistData.artists;
+            console.log(artists);
+            res.json(artists);
         })
         
+        relevantArtists.on('error', function(code) {
+            res.sendStatus(code);
+        });
     }
     
     

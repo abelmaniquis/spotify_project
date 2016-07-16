@@ -57,11 +57,27 @@ app.get('/search/:name', function(req, res) {
     searchReq.on('end', function(item) {
         var artist = item.artists.items[0];
         var id = item.artists.items[0].id;
-        res.json(artist);
+        
+        //console.log(artist);
+        //res.json(artist);
         
         /*Once the search request finishes, 
         we start a search for relevant artists.*/
-        getRelevantArtists(id);
+        var relevant = getRelevantArtists(id);
+        
+        relevant.on('end',function(artistData){
+            var artists = artistData.artists;
+            console.log(artists[1]);
+            var i = 0;
+            while(i < artists.length){
+            res.json(artists[i]);
+            i += 1;
+            }
+        })
+        
+        relevant.on('error', function(code) {
+            res.sendStatus(code);
+        });
         
     });
 
@@ -70,19 +86,8 @@ app.get('/search/:name', function(req, res) {
     });
     
     var getRelevantArtists = function(id){
-        var relevantArtists = getFromApi('artists/' + id + '/related-artists',{
-            query: req.params.name
-        });
-        
-        relevantArtists.on('end',function(artistData){
-            var artists = artistData.artists;
-            console.log(artists);
-            res.json(artists);
-        })
-        
-        relevantArtists.on('error', function(code) {
-            res.sendStatus(code);
-        });
+    var relevantArtists = getFromApi('artists/' + id + '/related-artists');
+    return relevantArtists;
     }
     
     

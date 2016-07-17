@@ -36,13 +36,11 @@ request to the Spotify/search endpoint to find information on the artist
 which they are looking for.
 */
 var app = express();
-app.use(express.static('public'));      //node.static calls the front end.
+app.use(express.static('public'));      
 /*
 When a request to /search/:name is made, 
-
 getFromAPI uses the following endpoint:
 /search?q=<name>&limit=1&type=artist.
-
 You then add listeners to the EventEmitter
 */
 
@@ -57,7 +55,6 @@ app.get('/search/:name', function(req, res) {
     searchReq.on('end', function(item) {
         var artist = item.artists.items[0];
         var id = item.artists.items[0].id;
-        
         //console.log(artist);
         //res.json(artist);
         
@@ -67,14 +64,13 @@ app.get('/search/:name', function(req, res) {
         
         relevant.on('end',function(artistData){
             var artists = artistData.artists;
-            console.log(artists[1]);
             res.json(artists);
             });
         
         relevant.on('error', function(code) {
             res.sendStatus(code);
         });
-        
+    
     });
 
     searchReq.on('error', function(code) {
@@ -82,8 +78,13 @@ app.get('/search/:name', function(req, res) {
     });
     
     var getRelevantArtists = function(id){
-    var relevantArtists = getFromApi('artists/' + id + '/related-artists');
+        var relevantArtists = getFromApi('artists/' + id + '/related-artists');
     return relevantArtists;
+    }
+    
+    var getTopTracks = function(id){
+        var topTracks = getFromApi('artists/' + id +'/top-tracks');
+    return topTracks;
     }
     
     

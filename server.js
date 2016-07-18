@@ -1,16 +1,3 @@
-//related artists dream theater
-//curl -X GET "https://api.spotify.com/v1/artists/2aaLAng2L2aWD2FClzwiep/related-artists"
-
-/*
-Break each library down.
-Test these libraries first.
-work on the project incrementally.
-*/
-
-/*
-Work slowly.
-*/
-
 var unirest = require('unirest'); //learn about all of these modules. Unirest is a library for 
 var express = require('express');
 var events = require('events'); //natively inside node.js
@@ -26,17 +13,8 @@ var getFromApi = function(endpoint, args) {
                 else {
                     emitter.emit('error', response.code);
                 }
-            /*Here, we make a request to the get related artists endpoint.
-              If the request is succesful, then artist.related should be set to item.artists
-              where item is the object returned by the get related artists endpoint.
-            */
             });
-    return emitter; //We get the data, emit it, and then catch it in emitter
-    /*
-    Event emitter sends an event to the back end
-    This is no different from events in jquery, 
-    
-    */
+    return emitter;
 };
 
 var app = express();
@@ -53,16 +31,12 @@ app.get('/search/:name', function(req, res) {
     searchReq.on('end', function(item) {
         var artist = item.artists.items[0];
         var id = item.artists.items[0].id;
-        //console.log(artist);
-        //res.json(artist);
+        var relevant = getRelevantArtists(id); //Defined on line 68.
         
-        /*Once the search request finishes, 
-        we start a search for relevant artists.*/
-        var relevant = getRelevantArtists(id);
-        
-        relevant.on('end',function(artistData){
-            var artists = artistData.artists;
-            res.json(artists);
+        relevant.on('end',function(item){
+            artist.related = item.artists;
+            console.log(artist);
+            res.json(artist);
             });
         
         relevant.on('error', function(code) {
@@ -77,15 +51,13 @@ app.get('/search/:name', function(req, res) {
     
     var getRelevantArtists = function(id){
         var relevantArtists = getFromApi('artists/' + id + '/related-artists');
-    return relevantArtists;
+        return relevantArtists;
     }
     
     var getTopTracks = function(id){
         var topTracks = getFromApi('artists/' + id +'/top-tracks');
-    return topTracks;
+        return topTracks;
     }
-    
-    
 });
 
 app.listen(8080);

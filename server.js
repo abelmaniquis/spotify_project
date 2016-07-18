@@ -1,19 +1,24 @@
 //related artists dream theater
 //curl -X GET "https://api.spotify.com/v1/artists/2aaLAng2L2aWD2FClzwiep/related-artists"
 
-var unirest = require('unirest');
-var express = require('express');
-var events = require('events');
-
-//Calls the Spotify API
-
-/*var test = unirest.get("https://api.spotify.com/v1/artists/2aaLAng2L2aWD2FClzwiep/related-artists");
-console.log(test.qs());
+/*
+Break each library down.
+Test these libraries first.
+work on the project incrementally.
 */
+
+/*
+Work slowly.
+*/
+
+var unirest = require('unirest'); //learn about all of these modules. Unirest is a library for 
+var express = require('express');
+var events = require('events'); //natively inside node.js
+
 var getFromApi = function(endpoint, args) {
     var emitter = new events.EventEmitter();
     unirest.get('https://api.spotify.com/v1/' + endpoint) 
-           .qs(args)//This queries the string
+           .qs(args)
            .end(function(response) {
                 if (response.ok) {
                     emitter.emit('end', response.body);//end event is emitted, extracts the artist and returns it in a response.
@@ -26,23 +31,16 @@ var getFromApi = function(endpoint, args) {
               where item is the object returned by the get related artists endpoint.
             */
             });
-    return emitter;
+    return emitter; //We get the data, emit it, and then catch it in emitter
+    /*
+    Event emitter sends an event to the back end
+    This is no different from events in jquery, 
+    
+    */
 };
 
-
-/*
-When a user makes a request to /search/:name, you are going to make a
-request to the Spotify/search endpoint to find information on the artist
-which they are looking for.
-*/
 var app = express();
 app.use(express.static('public'));      
-/*
-When a request to /search/:name is made, 
-getFromAPI uses the following endpoint:
-/search?q=<name>&limit=1&type=artist.
-You then add listeners to the EventEmitter
-*/
 
 app.get('/search/:name', function(req, res) {
     

@@ -62,4 +62,27 @@ Alter the application to retrieve a list of artists related to the artist you se
         endpoint
 
 
+-----------------------------------------------------------------------------------------
+Challenge 2: Parallelify Spotify:
 
+top tracks endpoint example: curl -X GET "https://api.spotify.com/v1/artists/2aaLAng2L2aWD2FClzwiep/top-tracks?country=US"
+    
+    Start multiple IO operations and wait for all of them to complete.
+    
+    For this assignment, you are going to take the list of relevant artists, and,
+    in parallel, make a request of the most popular tracks for each artist.
+    
+    -For each related artist, you need to send a parallel request to the top tracks endpoint.
+        -This should happen after the get related artists endpoint.
+        -It should use the artist IDs from the artist.related object
+    
+    If the request is successful, then the tracks attribute of the 
+    related artist should be set to item.tracks, where item is the 
+    object returned by the get related artists endpoint.
+    
+    
+    
+    
+    
+    
+    

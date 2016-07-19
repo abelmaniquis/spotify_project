@@ -35,13 +35,15 @@ app.get('/search/:name', function(req, res) {
         
         relevant.on('end',function(item){
             artist.related = item.artists;
-            console.log(artist);
+            
+            onRelatedArtistsEnd(artist.related);
             res.json(artist);
-            });
+        });
         
         relevant.on('error', function(code) {
             res.sendStatus(code);
         });
+        
     
     });
 
@@ -49,13 +51,19 @@ app.get('/search/:name', function(req, res) {
         res.sendStatus(code);
     });
     
+    var onRelatedArtistsEnd = function(artists){
+        var topTracks = [];
+        artists.forEach(function(a){
+            topTracks.push(getTopTracks(a));
+        });
+    }
+    
     var getRelevantArtists = function(id){
         var relevantArtists = getFromApi('artists/' + id + '/related-artists');
         return relevantArtists;
     }
-    
     var getTopTracks = function(id){
-        var topTracks = getFromApi('artists/' + id +'/top-tracks');
+        var topTracks = getFromApi('artists/' + id +'/top-tracks?country=US');
         return topTracks;
     }
 });

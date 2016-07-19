@@ -1,15 +1,15 @@
-var fs = require('fs');
-var path = require('path');
-var events = require('events');
+var fs = require('fs'); //require the file system module
+var path = require('path'); //Path module provides utilities for working with file and directory paths.
+var events = require('events'); //module used for handling events
 
-var countLines = function(file, cb) {
+var countLines = function(file, cb){
     var lines = 0;
-    var reader = fs.createReadStream(file);
+    var reader = fs.createReadStream(file); //Create a read stream
     reader.on('end', function() {
-        cb(null, lines);
+        cb(null, lines);  //
     });
     reader.on('data', function(data) {
-        lines += data.toString().split('\n').length - 1;
+        lines += data.toString().split('\n').length - 1;  //As data comes in, you split the document on the newline character, and count the number of instances.
     });
     reader.on('error', function(err) {
         cb(err);
@@ -17,7 +17,7 @@ var countLines = function(file, cb) {
 };
 
 
-var onReadDirComplete = function(err, files) {
+var onReadDirComplete = function(err, files) {  //Where the parallelization happens.
     if (err) throw err;
 
     var totalLines = 0;
@@ -47,4 +47,4 @@ var onReadDirComplete = function(err, files) {
     });
 };
 
-fs.readdir(process.argv[2], onReadDirComplete);
+fs.readdir(process.argv[2], onReadDirComplete); //Lists the files and folders in this directory.

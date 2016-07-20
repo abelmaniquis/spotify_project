@@ -36,7 +36,9 @@ app.get('/search/:name', function(req, res) {
         relevant.on('end',function(item){
             artist.related = item.artists;
             
-            onRelatedArtistsEnd(artist.related);
+            item.topTracks = onRelatedArtistsEnd(artist.related);
+            //console.log(artist);
+            
             res.json(artist);
         });
         
@@ -52,9 +54,11 @@ app.get('/search/:name', function(req, res) {
     });
     
     var onRelatedArtistsEnd = function(artists){
-        var topTracks = [];
-        artists.forEach(function(a){
-            topTracks.push(getTopTracks(a));
+        artists.forEach(function(artist){
+            artist.topTracks = getTopTracks(artist.id);
+            //console.log(artist);
+            
+            return artist.topTracks;
         });
     }
     
@@ -64,6 +68,7 @@ app.get('/search/:name', function(req, res) {
     }
     var getTopTracks = function(id){
         var topTracks = getFromApi('artists/' + id +'/top-tracks?country=US');
+        console.log(topTracks);
         return topTracks;
     }
 });
